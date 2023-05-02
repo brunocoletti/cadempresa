@@ -71,6 +71,7 @@ def dados():
             bairro = dados_plan[row][6]
             print('Cidade: ', dados_plan[row][7])
             cidade = dados_plan[row][7]
+            cidade = cidade.capitalize()
             print('Telefone: ', dados_plan[row][8])
             fone = dados_plan[row][8]
             print('Email: ', dados_plan[row][9])
