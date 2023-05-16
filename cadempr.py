@@ -26,6 +26,7 @@ bairro = ''
 cidade = ''
 fone = ''
 email = ''
+cep = ''
 dir_integra = ''
 dm_tp_amb = int(input("Qual será o ambiente? "))
 dados_plan = []
@@ -76,6 +77,9 @@ def dados():
             fone = dados_plan[row][8]
             print('Email: ', dados_plan[row][9])
             email = dados_plan[row][9]
+            email = email.lower()
+            print('Cep: ',dados_plan[row][10])
+            cep = dados_plan[row][10]
             print('Diretorio de integração: ', '/complianceServer/ComplianceFiscal/Integra/',dados_plan[row][0],'/')
             dir_integra = '/complianceServer/ComplianceFiscal/Integra/' + dados_plan[row][0] + '/'
             num_cnpj = cod_part[0:8]
@@ -84,11 +88,11 @@ def dados():
             print('numfilial:', num_filial)
             num_dig = cod_part[12:14]
             print('numdig:', num_dig)
-            arq_sql(cd,cod_part,nome,fantasia,lograd,nro,compl,bairro,cidade,fone,email,dir_integra, num_cnpj,num_filial,num_dig)
+            arq_sql(cd,cod_part,nome,fantasia,lograd,nro,compl,bairro,cidade,fone,email,cep,dir_integra, num_cnpj,num_filial,num_dig,dm_tp_amb)
             cont = cont + 1
     return print('### FIM. Cont: ', cont, ' ###')
 
-def arq_sql(cd,cod_part,nome,fantasia,lograd,nro,compl,bairro,cidade,fone,email,dir_integra, num_cnpj, num_filial, num_dig):
+def arq_sql(cd,cod_part,nome,fantasia,lograd,nro,compl,bairro,cidade,fone,email,cep,dir_integra, num_cnpj, num_filial, num_dig,dm_tp_amb):
     arquivo = open(f'empresas/{cod_part}.sql','w')
     arquivo.write(f'''
 ------------------------------------------
@@ -155,11 +159,11 @@ begin
                               , '{compl}' -- compl
                               , '{bairro}' -- bairro
                               , (select ci.id from csf_own.cidade ci where ci.descr = '{cidade}') -- cidade_id
-                              , XXXXXXXXXXXXXXX -- cep
+                              , '{cep}' -- cep
                               , '{fone}' -- fone
                               , '' -- fax
                               , '{email}' -- email EM MINUSCULO
-                              , (select es.pais_id from csf_own.estado es where es.id = (select ci.estado_id from csf_own.cidade ci where ci.descr = 'XXXXXXXXXXXXXXX')) -- pais_id
+                              , (select es.pais_id from csf_own.estado es where es.id = (select ci.estado_id from csf_own.cidade ci where ci.descr = '{cidade}')) -- pais_id
                               , vn_multorg_id -- multorg_id
                               , 1 -- dm_st_proc
                               );
@@ -230,7 +234,7 @@ begin
                         values ( vn_empresa_id -- id
                                , vn_pessoa_id -- pessoa_id
                                , 1 -- dm_situacao
-                               , 2 -- dm_tp_amb
+                               , {dm_tp_amb} -- dm_tp_amb
                                , 1 -- dm_tp_impr
                                , 1 -- dm_forma_emiss
                                , (select e.id from csf_own.juridica j, csf_own.empresa e where j.num_cnpj = vn_num_cnpj and j.num_filial = 1 and j.pessoa_id = e.pessoa_id) -- ar_empresa_id
