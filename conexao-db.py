@@ -5,9 +5,20 @@ import cx_Oracle # python3 -m pip install cx_Oracle --upgrade
 #PARAM_USER_ORCL    =csf_own
 #PARAM_PASS_ORCL    =AdM#QA2020
 
+ORCLPDB1 ='''(DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = dbqa.cndgxb5man6u.us-east-2.rds.amazonaws.com)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = QA)
+    )
+  )'''
+#-----
 
-#con = cx_Oracle.connect('topm/topm@127.0.0.1/xe')
-#con = cx_Oracle.connect('csf_own/AdM#QA2020@192.168.1.10:1521/quality')
-con = cx_Oracle.connect('jdbc:oracle:thin:@dbqa.cndgxb5man6u.us-east-2.rds.amazonaws.com:1521:qa')
-print (con.version)
-con.close()
+def conect(empresa):
+    connection = cx_Oracle.connect(user="csf_own", password="AdM#QA2020", dsn=ORCLPDB1,encoding="UTF-8")
+
+    cursor = connection.cursor()
+    for result in cursor.execute("select sysdate from dual"):
+        print(result)
+
+    connection.close()
