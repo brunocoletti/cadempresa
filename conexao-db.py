@@ -2,15 +2,16 @@ import cx_Oracle # python3 -m pip install cx_Oracle --upgrade
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
-
-ORCLPDB1 ='''(DESCRIPTION =
+ORCLPDB1='''(DESCRIPTION =
     (ADDRESS = (PROTOCOL = TCP)(HOST = dbqa.cndgxb5man6u.us-east-2.rds.amazonaws.com)(PORT = 1521))
     (CONNECT_DATA =
       (SERVER = DEDICATED)
       (SERVICE_NAME = QA)
     )
   )'''
+
+load_dotenv()
+
 #-----
 
 def conect(empresa):
